@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, minimum-scale=1, initial-scale=1"
+    />
+    <meta
+      name="description"
+      content="MetaClean Pro is a freeware service protecting internet users from data mining online predators."
+    />
+    <meta
+      name="keywords"
+      content="meta clean metaclean pro online service free metadata photo video photos image png jpeg jpg remove sensative data mining security"
+    />
+    <title>MetaClean Pro</title>
+    <link rel="canonical" href="index.html" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico?v=pgra65AAnN2" />
+    <style media="screen">
+      :root {
+        --meta-clean-background: #1c1e1f;
+        --meta-clean-text: #fff;
+        --meta-clean-primary: #4ca1af;
+        --meta-clean-alt: #c4e0e5;
+        --meta-clean-accent: #b88b4a;
+        --shadow-1: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+          rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+          rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+      }
+
+      html,
+      body {
+        margin: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: grid;
+        height: 100%;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 18px;
+        background-color: var(--meta-clean-background);
+        color: var(--meta-clean-text);
+        user-select: none;
+      }
+
+      #file-input {
+        position: fixed;
+        left: -999px;
+        top: -999px;
+      }
+
+      #metaclean {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        overflow-y: scroll;
+      }
+
+      h1 {
+        font-size: 32px;
+        margin: 3rem 0;
+      }
+
+      h2 {
+        font-size: 24px;
+        margin: 3rem 0;
+      }
+
+      a {
+        color: var(--meta-clean-primary);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .two-column {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: calc(100% - 4rem);
+        align-items: center;
+        justify-items: center;
+        justify-content: space-around;
+        padding: 2rem;
+      }
+
+      .two-column p {
+        text-align: center;
+        max-width: 500px;
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      nav {
+        display: grid;
+        width: 100%;
+      }
+
+      #nav-logo {
+        display: block;
+        width: 100px;
+        height: 100px;
+        margin: 1rem auto;
+      }
+
+      #nav-logo img {
+        display: block;
+        width: 100px;
+        height: 100px;
+      }
+
+      #dropzone {
+        display: flex;
+        flex-direction: column;
+        width: 70vw;
+        height: 70vw;
+        max-width: 900px;
+        max-height: 900px;
+        margin: 2rem 0 4rem;
+        border-radius: 10px;
+        border: 4px dashed var(--meta-clean-text);
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      #dropzone.processing {
+        animation: pulse 2s ease-in-out infinite;
+        cursor: default;
+      }
+
+      .info.hidden {
+        position: fixed;
+        top: -999px;
+        left: -999px;
+      }
+
+      #dropzone svg {
+        width: 25vw;
+        height: 25vw;
+        max-width: 250px;
+        max-height: 250px;
+      }
+
+      #tag {
+        margin: 3rem 0 1rem;
+      }
+
+      #meta-container {
+        position: relative;
+      }
+
+      #meta-connection {
+        position: absolute;
+        border-top: 5px dashed var(--meta-clean-primary);
+        height: 0px;
+        width: 200px;
+        top: 120px;
+        right: 278px;
+      }
+
+      #meta {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: flex-start;
+        justify-content: center;
+        column-gap: 5rem;
+        margin-top: 3rem;
+      }
+
+      #metadata {
+        background-color: var(--meta-clean-primary);
+        border-radius: 10px;
+        box-shadow: var(--shadow-1);
+        padding: 2rem;
+      }
+
+      #metadata-table {
+        min-width: 638px;
+        max-width: 638px;
+      }
+
+      #photo {
+        display: block;
+        position: relative;
+        width: 300px;
+        height: 400px;
+        border-radius: 10px;
+        border: 3px solid var(--meta-clean-primary);
+        overflow: hidden;
+        box-shadow: var(--shadow-1);
+      }
+
+      .example-photo {
+        display: block;
+        position: absolute;
+        width: 100%;
+        min-height: 100%;
+        object-fit: contain;
+        z-index: 3;
+      }
+
+      .example-photo.hidden {
+        opacity: 0;
+      }
+
+      #explanation {
+        position: relative;
+        width: 100vw;
+        padding-top: 100px;
+        padding-bottom: 140px;
+        margin-top: 2rem;
+        overflow: hidden;
+      }
+
+      #explanation-content {
+        position: relative;
+        display: grid;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+      }
+
+      #blob {
+        position: absolute;
+        top: -120px;
+        left: -1000px;
+        right: -580px;
+        z-index: 0;
+      }
+
+      .explanation-icon {
+        width: 15vw;
+        height: 15vw;
+        max-width: 50px;
+        max-height: 50px;
+        background-color: var(--meta-clean-alt);
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: var(--shadow-1);
+        border: 3px solid var(--meta-clean-primary);
+        transform: rotate3d(1, 0, 1, 7deg);
+        color: var(--meta-clean-primary);
+      }
+
+      footer {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        padding: 1rem 2rem 3rem;
+        background-color: var(--meta-clean-accent);
+        color: var(--meta-clean-background);
+        border-top: 2px solid var(--meta-clean-background);
+      }
+
+      footer a {
+        color: var(--meta-clean-background);
+      }
+
+      @media (max-width: 1250px) {
+        body {
+          font-size: 14px;
+        }
+
+        .two-column p {
+          max-width: 400px;
+        }
+
+        #meta-container {
+          min-height: 854px;
+          max-height: 854px;
+        }
+
+        #meta {
+          grid-template-columns: 1fr;
+          column-gap: 0;
+          justify-items: center;
+          row-gap: 2rem;
+        }
+
+        #meta-connection {
+          position: absolute;
+          width: 400px;
+          transform: rotate(90deg);
+          top: auto;
+          bottom: 400px;
+          right: 15vw;
+        }
+
+        #metadata-table {
+          min-width: 70vw;
+          max-width: 70vw;
+        }
+
+        footer {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @keyframes pulse {
+        50% {
+          opacity: 50%;
+        }
+      }
+    </style>
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3727869630419610"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div id="metaclean">
+      <input
+        id="file-input"
+        type="file"
+        accept="image/*"
+        hidden="true"
+        aria-hidden="true"
+        multiple
+      />
+      <main role="main">
+        <nav>
+          <a
+            id="nav-logo"
+            href="https://metaclean.pro"
+            alt="MetaClean Pro"
+            aria-label="MetaClean Pro"
+          >
+            <img src="assets/metaclean.webp" alt="MetaClean Logo" />
+          </a>
+        </nav>
+        <div
+          id="dropzone"
+          ondrop="dropHandler(event);"
+          ondragover="dragOverHandler(event);"
+        >
+          <svg
+            alt="Images Icon"
+            aria-hidden="true"
+            focusable="false"
+            role="img"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 576 512"
+          >
+            <path
+              fill="currentColor"
+              d="M528 32H112c-26.51 0-48 21.49-48 48v16H48c-26.51 0-48 21.49-48 48v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48v-16h16c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zm-48 400c0 8.822-7.178 16-16 16H48c-8.822 0-16-7.178-16-16V144c0-8.822 7.178-16 16-16h16v240c0 26.51 21.49 48 48 48h368v16zm64-64c0 8.822-7.178 16-16 16H112c-8.822 0-16-7.178-16-16V80c0-8.822 7.178-16 16-16h416c8.822 0 16 7.178 16 16v288zM176 200c30.928 0 56-25.072 56-56s-25.072-56-56-56-56 25.072-56 56 25.072 56 56 56zm0-80c13.234 0 24 10.766 24 24s-10.766 24-24 24-24-10.766-24-24 10.766-24 24-24zm240.971 23.029c-9.373-9.373-24.568-9.373-33.941 0L288 238.059l-31.029-31.03c-9.373-9.373-24.569-9.373-33.941 0l-88 88A24.002 24.002 0 0 0 128 312v28c0 6.627 5.373 12 12 12h360c6.627 0 12-5.373 12-12v-92c0-6.365-2.529-12.47-7.029-16.971l-88-88zM480 320H160v-4.686l80-80 48 48 112-112 80 80V320z"
+            ></path>
+          </svg>
+          <p id="instructions" class="info">
+            Click or drag & drop your images here.
+          </p>
+          <p id="waiting" class="info hidden"></p>
+        </div>
+        <h1 id="tag">Protect what you love most.</h1>
+        <div id="meta-container">
+          <div id="meta-connection"></div>
+          <div id="meta">
+            <div id="metadata">
+              <table id="metadata-table">
+                <tr>
+                  <td>Altitude</td>
+                  <td>1,642.84 m (5389.89 ft)</td>
+                </tr>
+                <tr>
+                  <td>Altitude Reference</td>
+                  <td>Above Sea Level</td>
+                </tr>
+                <tr>
+                  <td>Destination Bearing</td>
+                  <td>80.776</td>
+                </tr>
+                <tr>
+                  <td>Destination Bearing Reference</td>
+                  <td>True Direction</td>
+                </tr>
+                <tr>
+                  <td>Horizontal Positioning Error</td>
+                  <td>40</td>
+                </tr>
+                <tr>
+                  <td>Image Direction</td>
+                  <td>80.776</td>
+                </tr>
+                <tr>
+                  <td>Image Direction Reference</td>
+                  <td>True South</td>
+                </tr>
+                <tr>
+                  <td>Latitude</td>
+                  <td>43&deg; 35' 0.35"S</td>
+                </tr>
+                <tr>
+                  <td>Longitude</td>
+                  <td>110&deg; 33' 43.452"E</td>
+                </tr>
+                <tr>
+                  <td>Speed</td>
+                  <td>1.18</td>
+                </tr>
+                <tr>
+                  <td>Speed Reference</td>
+                  <td>Kilometers per hour</td>
+                </tr>
+                <tr>
+                  <td>Date & Time Stamp</td>
+                  <td>Date Time Original: Jan 10, 2022 at 5:02:14 PM</td>
+                </tr>
+              </table>
+            </div>
+            <div id="photo">
+              <img
+                id="child"
+                class="example-photo hidden"
+                src="assets/child.webp"
+                alt="Example photo of a child"
+                draggable="false"
+              />
+              <img
+                id="car"
+                class="example-photo hidden"
+                src="assets/car.webp"
+                alt="Example photo of a car"
+                draggable="false"
+              />
+              <img
+                id="home"
+                class="example-photo hidden"
+                src="assets/home.webp"
+                alt="Example photo of a house"
+                draggable="false"
+              />
+            </div>
+          </div>
+        </div>
+        <div id="explanation">
+          <svg
+            viewBox="0 0 500 500"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            id="blob"
+          >
+            <defs>
+              <linearGradient
+                id="gradient"
+                x1="-10%"
+                y1="30%"
+                x2="25%"
+                y2="100%"
+              >
+                <stop offset="0%" style="stop-color: rgb(76, 161, 175)"></stop>
+                <stop
+                  offset="80%"
+                  style="stop-color: rgb(196, 224, 229)"
+                ></stop>
+              </linearGradient>
+            </defs>
+            <path
+              stroke="rgb(76, 161, 175)"
+              fill="url(#gradient)"
+              d="M470,296Q472,342,445,380Q418,418,368.5,418Q319,418,284.5,441Q250,464,204,467.5Q158,471,131,433.5Q104,396,91.5,358.5Q79,321,61.5,285.5Q44,250,59.5,213.5Q75,177,93,144Q111,111,138,78.5Q165,46,207.5,45.5Q250,45,297.5,33Q345,21,369.5,63.5Q394,106,430.5,133Q467,160,467.5,205Q468,250,470,296Z"
+            ></path>
+          </svg>
+          <div id="explanation-content">
+            <div class="two-column">
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                role="img"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                class="explanation-icon"
+              >
+                <path
+                  fill="currentColor"
+                  d="M496.656 285.683C506.583 272.809 512 256 512 235.468c-.001-37.674-32.073-72.571-72.727-72.571h-70.15c8.72-17.368 20.695-38.911 20.695-69.817C389.819 34.672 366.518 0 306.91 0c-29.995 0-41.126 37.918-46.829 67.228-3.407 17.511-6.626 34.052-16.525 43.951C219.986 134.75 184 192 162.382 203.625c-2.189.922-4.986 1.648-8.032 2.223C148.577 197.484 138.931 192 128 192H32c-17.673 0-32 14.327-32 32v256c0 17.673 14.327 32 32 32h96c17.673 0 32-14.327 32-32v-8.74c32.495 0 100.687 40.747 177.455 40.726 5.505.003 37.65.03 41.013 0 59.282.014 92.255-35.887 90.335-89.793 15.127-17.727 22.539-43.337 18.225-67.105 12.456-19.526 15.126-47.07 9.628-69.405zM32 480V224h96v256H32zm424.017-203.648C472 288 472 336 450.41 347.017c13.522 22.76 1.352 53.216-15.015 61.996 8.293 52.54-18.961 70.606-57.212 70.974-3.312.03-37.247 0-40.727 0-72.929 0-134.742-40.727-177.455-40.727V235.625c37.708 0 72.305-67.939 106.183-101.818 30.545-30.545 20.363-81.454 40.727-101.817 50.909 0 50.909 35.517 50.909 61.091 0 42.189-30.545 61.09-30.545 101.817h111.999c22.73 0 40.627 20.364 40.727 40.727.099 20.363-8.001 36.375-23.984 40.727zM104 432c0 13.255-10.745 24-24 24s-24-10.745-24-24 10.745-24 24-24 24 10.745 24 24z"
+                ></path>
+              </svg>
+              <div>
+                <h2>Simple</h2>
+                <p>
+                  Just drag & drop any number of photos to remove metadata.
+                  MetaClean is the simplest way to protect what matters most to
+                  you.
+                </p>
+                <p>
+                  Once processed, your images are safe to share on any platform.
+                </p>
+              </div>
+            </div>
+            <div class="two-column">
+              <div>
+                <h2>Secure</h2>
+                <p>
+                  We believe in privacy on the web. Remove sensative information
+                  from your photos using our secure service.
+                </p>
+                <p>
+                  We have a strict no data collection policy and we cannot view
+                  your photos.
+                </p>
+              </div>
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                role="img"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                class="explanation-icon"
+              >
+                <path
+                  fill="currentColor"
+                  d="M400 224h-16v-62.5C384 73.1 312.9.3 224.5 0 136-.3 64 71.6 64 160v64H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zM96 160c0-70.6 57.4-128 128-128s128 57.4 128 128v64H96v-64zm304 320H48c-8.8 0-16-7.2-16-16V272c0-8.8 7.2-16 16-16h352c8.8 0 16 7.2 16 16v192c0 8.8-7.2 16-16 16z"
+                ></path>
+              </svg>
+            </div>
+            <div class="two-column">
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                role="img"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                class="explanation-icon"
+              >
+                <path
+                  fill="currentColor"
+                  d="M334.89 121.63l43.72-71.89C392.77 28.47 377.53 0 352 0H160.15c-25.56 0-40.8 28.5-26.61 49.76l43.57 71.88C-9.27 240.59.08 392.36.08 412c0 55.23 49.11 100 109.68 100h292.5c60.58 0 109.68-44.77 109.68-100 0-19.28 8.28-172-177.05-290.37zM160.15 32H352l-49.13 80h-93.73zM480 412c0 37.49-34.85 68-77.69 68H109.76c-42.84 0-77.69-30.51-77.69-68v-3.36c-.93-59.86 20-173 168.91-264.64h110.1C459.64 235.46 480.76 348.94 480 409zM285.61 310.74l-49-14.54c-5.66-1.62-9.57-7.22-9.57-13.68 0-7.86 5.76-14.21 12.84-14.21h30.57a26.78 26.78 0 0 1 13.93 4 8.92 8.92 0 0 0 11-.75l12.73-12.17a8.54 8.54 0 0 0-.65-13 63.12 63.12 0 0 0-34.17-12.17v-17.6a8.68 8.68 0 0 0-8.7-8.62H247.2a8.69 8.69 0 0 0-8.71 8.62v17.44c-25.79.75-46.46 22.19-46.46 48.57 0 21.54 14.14 40.71 34.38 46.74l49 14.54c5.66 1.61 9.58 7.21 9.58 13.67 0 7.87-5.77 14.22-12.84 14.22h-30.61a26.72 26.72 0 0 1-13.93-4 8.92 8.92 0 0 0-11 .76l-12.84 12.06a8.55 8.55 0 0 0 .65 13 63.2 63.2 0 0 0 34.17 12.17v17.55a8.69 8.69 0 0 0 8.71 8.62h17.41a8.69 8.69 0 0 0 8.7-8.62V406c25.68-.64 46.46-22.18 46.57-48.56.02-21.5-14.13-40.67-34.37-46.7z"
+                ></path>
+              </svg>
+              <div>
+                <h2>Free</h2>
+                <p>
+                  MetaClean is a free service. We built this service to protect
+                  internet users like you from people who use data for bad.
+                </p>
+                <p>
+                  Don't let random people online see your sensative information.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <footer>
+        <div>
+          <div id="status">Offline</div>
+          <p>Copyright &copy; MetaClean 2022. All rights reserved.</p>
+        </div>
+        <div class="group">
+          <a
+            href="terms"
+            alt="MetaClean Terms of Use"
+            aria-label="MetaClean Terms of Use"
+          >
+            Terms of Use
+          </a>
+          <span>&middot;</span>
+          <a
+            href="privacy"
+            alt="MetaClean Privacy Policy"
+            aria-label="MetaClean Privacy Policy"
+          >
+            Privacy Policy
+          </a>
+          <span>&middot;</span>
+          <a
+            href="https://github.com/bytewaveco/metaclean-server"
+            target="__blank"
+            alt="MetaClean Server Code"
+            aria-label="MetaClean Server Code"
+          >
+            <svg
+              aria-hidden="true"
+              focusable="false"
+              role="img"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 496 512"
+              alt="MetaClean Open Source Project"
+              aria-label="MetaClean Open Source Project"
+              style="height: 0.9rem"
+            >
+              <path
+                fill="currentColor"
+                d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+      </footer>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const meta = {
+          child: {
+            Altitude: "1,642.84 m (5389.89 ft)",
+            "Altitude Reference": "Above Sea Level",
+            "Destination Bearing": "46.229",
+            "Destination Bearing Reference": "True Direction",
+            Device: "Peter's Pixel 2 XL",
+            "Horizontal Positioning Error": "40",
+            "Image Direction": "80.776",
+            "Image Direction Reference": "True South",
+            Latitude: "43° 35' 0.35\"S",
+            Longitude: "110° 33' 43.452\"E",
+            "Date & Time Stamp":
+              "Date Time Original: Jan 10, 2022 at 5:02:14 PM",
+          },
+          car: {
+            Altitude: "1,839.73 m (6,035.86 ft)",
+            "Altitude Reference": "Above Sea Level",
+            "Destination Bearing": "13.726",
+            "Destination Bearing Reference": "True Direction",
+            Device: "Canon EOS C300 Mark III",
+            Latitude: "30.2672° N",
+            Longitude: "97.7431° W",
+            Speed: "17.2",
+            "Speed Reference": "Miles per hour",
+            "Date & Time Stamp":
+              "Date Time Original: Aug 10, 2021 at 3:02:14 PM",
+          },
+          home: {
+            Altitude: "277.27 m (909.69 ft)",
+            "Altitude Reference": "Above Sea Level",
+            "Destination Bearing": "80.776",
+            "Destination Bearing Reference": "True Direction",
+            Device: "Sierra's iPhone 12",
+            Latitude: "43° 35' 0.35\"S",
+            Longitude: "110° 33' 43.452\"E",
+            "Date & Time Stamp":
+              "Date Time Original: Jun 27, 2018 at 6:29:32 PM",
+          },
+        };
+
+        const table = document.getElementById("metadata-table");
+        const keys = Object.keys(meta);
+        const images = {};
+        keys.forEach((id) => (images[id] = document.getElementById(id)));
+        let activeImageIdx = 0;
+        let activeImage = keys[activeImageIdx];
+
+        function changePhoto(init = false) {
+          if (!init) {
+            images[activeImage].classList.add("hidden");
+
+            activeImageIdx++;
+
+            if (activeImageIdx >= keys.length) {
+              activeImageIdx = 0;
+            }
+          }
+
+          activeImage = keys[activeImageIdx];
+          images[activeImage].classList.remove("hidden");
+
+          const tableContent = [];
+
+          for (const [key, value] of Object.entries(meta[activeImage])) {
+            tableContent.push(`<tr><td>${key}</td><td>${value}</td></tr>`);
+          }
+
+          table.innerHTML = tableContent.join("");
+        }
+
+        const interval = setInterval(changePhoto, 5000);
+        changePhoto(true);
+        //
+        ///
+        //
+        fetch("https://app.metaclean.pro/api/v1/status")
+          .then((res) => {
+            if (res.status === 200) {
+              document.getElementById("status").innerText = "Online";
+            }
+          })
+          .catch(console.error);
+        //
+        ///
+        //
+        const dropzone = document.getElementById("dropzone");
+        let preventUpload = false;
+
+        dropzone.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          if (!preventUpload) {
+            const input = document.getElementById("file-input");
+
+            input.onchange = (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+
+              const formData = new FormData();
+
+              for (let idx = 0; idx < input.files.length; idx++) {
+                formData.append("upload[]", input.files[idx]);
+              }
+
+              upload(formData);
+            };
+
+            input.click();
+          }
+        });
+      });
+
+      function dropHandler(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!preventUpload) {
+          const formData = new FormData();
+
+          if (event.dataTransfer.items) {
+            for (let idx = 0; idx < event.dataTransfer.items.length; idx++) {
+              if (event.dataTransfer.items[idx].kind === "file") {
+                formData.append(
+                  "upload[]",
+                  event.dataTransfer.items[idx].getAsFile()
+                );
+              }
+            }
+          } else {
+            for (let idx = 0; idx < event.dataTransfer.files.length; idx++) {
+              formData.append("upload[]", event.dataTransfer.files[idx]);
+            }
+          }
+
+          upload(formData);
+        }
+      }
+
+      function dragOverHandler() {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      function upload(data) {
+        if (data.getAll("upload[]").length) {
+          preventUpload = true;
+          const dropzone = document.getElementById("dropzone");
+          const instructions = document.getElementById("instructions");
+          const waiting = document.getElementById("waiting");
+
+          waiting.innerText =
+            data.getAll("upload[]").length > 1
+              ? `Removing metadata from ${
+                  data.getAll("upload[]").length
+                } images...`
+              : "Removing metadata from your image...";
+          instructions.classList.add("hidden");
+          waiting.classList.remove("hidden");
+
+          dropzone.classList.add("processing");
+
+          fetch("https://app.metaclean.pro/api/v1/m/files", {
+            method: "POST",
+            body: data,
+          })
+            .then((res) => res.json())
+            .then((json) => {
+              if ("url" in json) {
+                setTimeout(() => {
+                  const downloadLink = document.createElement("a");
+                  downloadLink.target = "__blank";
+                  downloadLink["aria-label"] = "Your MetaClean Pro files!";
+                  downloadLink.href = json.url;
+                  downloadLink.click();
+
+                  waiting.classList.add("hidden");
+                  instructions.classList.remove("hidden");
+                  dropzone.classList.remove("processing");
+                  waiting.innerText = "";
+
+                  setTimeout(() => {
+                    downloadLink.remove();
+                  }, 5000);
+                }, 1000);
+              }
+            })
+            .catch(console.error)
+            .finally(() => (preventUpload = false));
+        }
+      }
+    </script>
+  </body>
+</html>
